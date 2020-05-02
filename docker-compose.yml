@@ -1,0 +1,71 @@
+version: '3.7'
+services:
+
+  redis-service:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - redis-demo-network
+    restart: always
+
+  consumer-addition:
+    build:
+      context: ./consumer-addition
+      dockerfile: Dockerfile
+    networks:
+      - redis-demo-network
+    depends_on:
+      - redis-service
+    restart: always
+
+  consumer-division:
+    build:
+      context: ./consumer-division
+      dockerfile: Dockerfile
+    networks:
+      - redis-demo-network
+    depends_on:
+      - redis-service
+    restart: always
+
+  producer-numbers:
+    build:
+      context: ./producer-numbers
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - redis-demo-network
+    depends_on:
+      - redis-service
+    restart: always
+
+  stream-api:
+    build:
+      context: ./streams-info
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - redis-demo-network
+    depends_on:
+      - redis-service
+    restart: always
+
+  front-end:
+    build:
+      context: ./streams-web-client
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - redis-demo-network
+    depends_on:
+      - redis-service
+      - stream-api
+    restart: always
+  
+networks:
+  redis-demo-network:
+    driver: bridge

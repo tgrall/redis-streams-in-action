@@ -1,0 +1,26 @@
+{
+  "name": "streams-info",
+  "version": "1.0.0",
+  "description": "Simple service to read Redis Streams Info",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Tug Grall - tugdual@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tgrall/redis-streams-in-action.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "moment": "^2.25.0",
+    "nconf": "^0.10.0",
+    "redis": "^3.0.2",
+    "ws": "^7.2.5"
+  }
+}
