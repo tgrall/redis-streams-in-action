@@ -164,7 +164,116 @@ Overall the logic is the same, the only part that are different:
 * Java 8
 * Apache Maven
 * Docker
+* Redis Insight
 
-### Build the project
+### Build & Run the Project
+
+1- Get the project
+
+```
+> git clone https://github.com/tgrall/redis-streams-in-action.git
+
+> cd redis-streams-in-action
+
+```
+
+2- Package the Java Service with Maven  *(Need to put that in the Docker phase...)*
+
+```
+> mvn clean package
+
+```
+
+3- Build and Run the Docker Compose image project
+
+```
+>  docker-compose up -d --build
+
+```
+| **This will take some time, especially the packaginf of the Vue.js application**
+
+### Discover the Application
+
+Open your browser and point it to http://localhost:8080
+
+In the home page you can see:
+
+* At the top informations about the number of messages, groups of consumer and the first/last messages of the Redis Stream. (Currently empty)
+* At the bottom of the page, the list of consumers groups and consumers. 
+
+Click on "Post & View" in the top menu, and enter 2 numbers in the form, then click Post.
+
+You will see the number of messages, and consumers changing.
+
+Everything should be green
+
+You can test with more valid values.
+
+Then go in "Redis Insight" (or any other tools), in the Streams section you will the Streaams, Message and Consumers Groups.
+
+Click on the "Browser" and look at the key, you can see the result of the calculation in the keys `app:service:addition` and `app:service:division`.
+
+**Configure the "Error Management"**
+
+1- Take the name of the "`division-service`" consumer ( the IP address that you can find in the home page of the demo )
+
+2- Edit the Hash `app:retry:division-service` with the following values:
+
+* `max_retries` : 3  (to only try 3 times to read the message before sending a Ack)
+* `delete_on_error` : false   (to keep the message in the stream)
+* `consumer_name` : the name (IP address), of the consumer, be sure you are taking the consumer associated with the "division" service
+
+When the "retry configuration" is updated, you can go back to the Form in the demonstration.
+
+3- Enter a division by 0   (5 0)
+
+* The consumer will move to "Red" since he as some pending messages associated to it
+* Then after a while it will move back to "Green", since the message would have been read and "acknowledge"
+
+You can do the same test but from the "Post Message" page, just click on "View" message button in the consumer when it is Red, to see the retries.
 
 
+### Scale the number of consumer
+
+When you will be scaling your application sending millions of messages you want the consuming services to be able to scale and also to be available all the time to be able to process the messages in real time.
+
+This is pretty easy with Redis Streams!
+
+You just need to add new "consumers" to the consumert group you want to scale.
+
+Then when you have multiple process Redis will distribute the read by consumers and if one fail another one will continue to read the messages... and this is where it is also interesting to have a way to Claim and Ack the messages!
+
+Our calculator is so successful that we need to scale it! Let's for example put 3 "Division" consumer and 5 "Addition".
+
+**Add Consumers**
+
+Open a terminal and run the following command to scale the container with Docker Compose:
+
+```
+> docker-compose up -d --scale consumer-addition=3 --scale consumer-division=5  --no-recreate
+```
+
+This will start new containers.
+
+
+**Post messages**
+
+Go to the "Post & View" page and enter new values (valid for now).
+
+You should see new consumer joinin the group.
+
+If you do not see a lost just post more messages!
+
+So you see that now the processing power of your messages is a lot bigger.
+
+
+**Generate an error**
+
+Post string or division by zero. (start with one single error for now).
+
+You will see the consumer becoming Red, and may be moving to the one that claims for processing and then going back to green.
+
+(not the addition for now, since you have not configured the Retry policy)
+
+
+That's it for now.
