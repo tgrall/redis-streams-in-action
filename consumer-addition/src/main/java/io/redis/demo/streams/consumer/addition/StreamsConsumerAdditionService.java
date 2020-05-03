@@ -91,7 +91,7 @@ public class StreamsConsumerAdditionService implements InitializingBean, Disposa
         }
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 5000)
     public void processPendingMessages() throws InterruptedException {
         Map retryConfiguration = getRetryConfiguration();
         // if the current consumer is the one to process pending messages start processing
@@ -231,8 +231,8 @@ public class StreamsConsumerAdditionService implements InitializingBean, Disposa
         if ( config == null || config.isEmpty()) { // create the key
             config = new HashMap();
             config.put(Config.CONFIG_CONSUMER_NAME,"--");
-            config.put(Config.CONFIG_MAX_RETRIES,"30");
-            config.put(Config.CONFIG_DELETE_ON_ERROR, "true");
+            config.put(Config.CONFIG_MAX_RETRIES,"5");
+            config.put(Config.CONFIG_DELETE_ON_ERROR, "false");
             config.put(Config.CONFIG_MAX_CLAIMED_MESSAGES, "1");
 
             template.opsForHash().putAll(retryConfigurationKey, config);

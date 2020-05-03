@@ -103,8 +103,7 @@ public class StreamsConsumerDivisionService implements InitializingBean, Disposa
     }
 
 
-
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 8000)
     public void processPendingMessages() throws InterruptedException {
 
         Map retryConfiguration = getRetryConfiguration();
@@ -147,53 +146,7 @@ public class StreamsConsumerDivisionService implements InitializingBean, Disposa
         } else {
             log.info("The consumer "+ consumerName + " is not configured to process pending messages");
         }
-
-
-
-
-
-        //RedisAsyncCommands commands = (RedisAsyncCommands) template.getConnectionFactory().getConnection().getNativeConnection();
-
-        //List<Object> pendingEntries = commands.getStatefulConnection().sync().xpending(streamName, consumerGroupName, Range.unbounded(), Limit.from(100));
-
-
-
-//        CommandArgs<String, String> args = new CommandArgs<>(StringCodec.UTF8)
-//                .add(streamName)
-//                .add(consumerGroupName)
-//                .add("-")
-//                .add("+")
-//                .add("100");
-//
-//
-//        RedisFuture f = commands.dispatch(CommandType.XPENDING, new StatusOutput<>(StringCodec.UTF8), args);
-//
-//        f.await(5, TimeUnit.SECONDS);
-//        try {
-//            System.out.println("Real Custom Command[dp.DATE]: " + result.get());
-//
-//            //            f.get();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-
-//
-//
-//        try {
-//
-//            f.get( 5, TimeUnit.SECONDS );
-//
-//
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//        }
-
-
-
     }
-
-
 
         @Override
     public void afterPropertiesSet() throws Exception {
@@ -244,8 +197,8 @@ public class StreamsConsumerDivisionService implements InitializingBean, Disposa
         if ( config == null || config.isEmpty()) { // create the key
             config = new HashMap();
             config.put(Config.CONFIG_CONSUMER_NAME,"--");
-            config.put(Config.CONFIG_MAX_RETRIES,"30");
-            config.put(Config.CONFIG_DELETE_ON_ERROR, "true");
+            config.put(Config.CONFIG_MAX_RETRIES,"5");
+            config.put(Config.CONFIG_DELETE_ON_ERROR, "false");
             config.put(Config.CONFIG_MAX_CLAIMED_MESSAGES, "1");
 
             template.opsForHash().putAll(retryConfigurationKey, config);

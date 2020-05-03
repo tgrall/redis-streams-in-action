@@ -12,7 +12,9 @@
         <b-nav-item  to="/all-in-one" >   Post & View</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
+        <b-nav-item to="/doc" >
         <img src="/imgs/redislabs.png" height="30" />
+        </b-nav-item>
         </b-navbar-nav>      
         </b-collapse>
       </b-navbar>

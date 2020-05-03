@@ -19,8 +19,12 @@ Vue.use(VueRouter)
     path: '/all-in-one',
     name: 'AllInOne',
     component: () => import('../views/AllInOne.vue')
-  }
-]
+  },
+  {
+    path: '/doc',
+    name: 'Slides',
+    component: () => import('../views/Slides.vue')
+  }]
 
 const router = new VueRouter({
   mode: 'history',
